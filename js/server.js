@@ -22,7 +22,19 @@ const server = createServer((req, res) => {
         const message = MESSAGE.replace('%1', name) + `${date}.`;
         res.writeHead(200, { 'Content-Type': 'text/html' });
         res.end(`<p style="color: blue;">${message}</p>`);
+        return;
     }
+
+    // Handle root path - CRITICAL for Render health checks
+    if (req.method === 'GET' && url.pathname === '/') {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end('<h1>COMP4537 Lab 3 API Server</h1><p>Use: <a href="/getDate?name=John">/getDate?name=John</a></p>');
+        return;
+    }
+
+    // Handle all other requests
+    res.writeHead(404, { 'Content-Type': 'text/html' });
+    res.end('<h1>404 Not Found</h1>');
 });
 
 server.listen(PORT, HOST, () => {
