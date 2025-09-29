@@ -1,12 +1,16 @@
-import { Utils } from '../modules/utils.js';
-import { createServer } from 'http';
-import { MESSAGE } from '../lang/messages/en/user.js';
+'use strict';
+var http = require('http');
 
+import { Utils } from '../modules/utils.js';
+import { MESSAGE } from '../lang/messages/en/user.js';
+import { FileUtils } from '../modules/fileUtils.js';
 
 const PORT = process.env.PORT || 3000;
 const HOST = '0.0.0.0'; // Required for Render deployment
 
-const server = createServer((req, res) => {
+const fileUtils = new FileUtils();
+
+http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host}`);
 
     if (req.method === 'GET' && url.pathname === '/getDate/') {
@@ -25,6 +29,40 @@ const server = createServer((req, res) => {
         return;
     }
 
+    if (req.method === 'GET' && url.pathname === '/writeFile/') {
+        const text = url.searchParams.get('text');
+        await fileUtils.appendToFile(text);
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.end('Content written to file.txt');
+        return;
+    }
+
+    // Handle dynamic file reading: /readFile/filename
+    if (req.method === 'GET' && url.pathname.startsWith('/readFile/')) {
+        const filename = url.pathname.substring('/readFile/'.length);
+
+        if (!filename) {
+            res.writeHead(400, { 'Content-Type': 'text/html' });
+            res.end('<h1>400 Bad Request</h1><p>Filename is required</p>');
+            return;
+        }
+
+        try {
+            const content = await fileUtils.readFile(filename);
+            res.writeHead(200, { 'Content-Type': 'text/plain' });
+            res.end(content);
+        } catch (error) {
+            if (error.code === 'ENOENT') {
+                res.writeHead(404, { 'Content-Type': 'text/html' });
+                res.end(`<h1>404 File Not Found</h1><p>The file "${filename}" does not exist.</p>`);
+            } else {
+                res.writeHead(500, { 'Content-Type': 'text/html' });
+                res.end('<h1>500 Internal Server Error</h1><p>Error reading file</p>');
+            }
+        }
+        return;
+    }
+
     // Handle root path - CRITICAL for Render health checks
     if (req.method === 'GET' && url.pathname === '/') {
         res.writeHead(200, { 'Content-Type': 'text/html' });
@@ -35,8 +73,4 @@ const server = createServer((req, res) => {
     // Handle all other requests
     res.writeHead(404, { 'Content-Type': 'text/html' });
     res.end('<h1>404 Not Found</h1>');
-});
-
-server.listen(PORT, HOST, () => {
-    console.log(`Server is running on HOST:${HOST}, PORT:${PORT}`);
-});
+}).listen(PORT, HOST);
