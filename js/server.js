@@ -1,7 +1,5 @@
-'use strict';
-var http = require('http');
-
 import { Utils } from '../modules/utils.js';
+import { createServer } from 'http';
 import { MESSAGE } from '../lang/messages/en/user.js';
 import { FileUtils } from '../modules/fileUtils.js';
 
@@ -10,7 +8,7 @@ const HOST = '0.0.0.0'; // Required for Render deployment
 
 const fileUtils = new FileUtils();
 
-http.createServer(async (req, res) => {
+const server = createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host}`);
 
     if (req.method === 'GET' && url.pathname === '/getDate/') {

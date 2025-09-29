@@ -1,11 +1,11 @@
-var fs = require('fs');
+import { promises as fs } from 'fs';
 
 export class FileUtils {
     async appendToFile(text, filename = 'file.txt') {
-        await fs.promises.appendFile(filename, text);
+        await fs.appendFile(filename, text);
     }
 
     async readFile(filename = 'file.txt') {
-        return await fs.promises.readFile(filename, 'utf-8');
+        return await fs.readFile(filename, 'utf-8');
     }
 }
