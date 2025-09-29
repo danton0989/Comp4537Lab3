@@ -1,5 +1,7 @@
 import { Utils } from '../modules/utils.js';
 import { createServer } from 'http';
+import { MESSAGE } from '../lang/messages/en/user.js';
+
 
 const PORT = process.env.PORT || 3000;
 const HOST = '0.0.0.0'; // Required for Render deployment
@@ -17,7 +19,7 @@ const server = createServer((req, res) => {
         }
 
         const date = Utils.getDate();
-        const message = `Hello ${name}, What a beautiful day. Server current date and time is ${date}.`;
+        const message = MESSAGE.replace('%1', name) + `${date}.`;
         res.writeHead(200, { 'Content-Type': 'text/html' });
         res.end(`<p style="color: blue;">${message}</p>`);
     }
