@@ -2,6 +2,7 @@ import { Utils } from '../modules/utils.js';
 import { createServer } from 'http';
 
 const PORT = process.env.PORT || 3000;
+const HOST = '0.0.0.0'; // Required for Render deployment
 
 const server = createServer((req, res) => {
     const url = new URL(req.url, `http://${req.headers.host}`);
@@ -15,6 +16,6 @@ const server = createServer((req, res) => {
     }
 });
 
-server.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+server.listen(PORT, HOST, () => {
+    console.log(`Server is running on HOST:${HOST}, PORT:${PORT}`);
 });
