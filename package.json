@@ -1,0 +1,31 @@
+{
+  "name": "wanglab3",
+  "version": "1.0.0",
+  "main": "js/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node js/server.js",
+    "dev": "node js/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danton0989/Comp4537Lab3.git"
+  },
+  "keywords": [
+    "nodejs",
+    "api",
+    "server",
+    "comp4537"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danton0989/Comp4537Lab3/issues"
+  },
+  "homepage": "https://github.com/danton0989/Comp4537Lab3#readme",
+  "description": "COMP4537 Lab 3 - Simple API Server for getting server date and time",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
